@@ -1,33 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Site</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
-        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+<%- include('layouts/header') %>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <div class="container">
+        <!-- Brand/logo -->
+        <a class="navbar-brand text-warning text-bold" href="/todo/all">Todo List App</a>
 
-        <style>
-            .dropdown-menu .dropdown-item {
-                font-size: 0.8rem;
-            }
-        </style>
-</head>
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<body>
-    <div class="container border mt-5 border p-3" style="width: 70%;">
-        <h3 class="text-center" style="color: rgb(109, 6, 109);">To do list</h3>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+            <div class="nav-items float-right d-flex align-items-center">
+                <div class="pr-2 dropdown">
+                    <!-- Profile Picture -->
+                    <div class="d-flex align-items-center">
+                        <img src="<%= user.picture %>" alt="Profile Picture" class="rounded-circle" style="width: 40px; height: 40px;">
+                        <span class="text-light d-block pl-2"><%= user.displayName %></span>
+                        <a href="/todo/logout" class="btn btn-sm btn-danger ml-3">Logout</a>
+                </div>
+                  <div class="logout">
+                    
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <div class="container border mt-3 border-primary p-3" style="width: 80%;">
+        <h3 class="text-center text-dark">To do list</h3>
         <div class="form">
-            <form class="container mt-2" action="/todo" method="post">
+            <form class="container mt-3" action="/todo" method="post">
                 <div class="hello" style="display: flex; flex-direction:row;justify-content:space-between">
                     <div class="form-group">
                         <input type="text" class="form-control" name="task" id="" placeholder="Add task here..."
-                            style="width:600px;" required>
+                            style="width:650px;" required>
                     </div>
                     <div class="form-group">
                         <input type="date" class="form-control" name="dueDate" id="" required>
@@ -40,25 +49,27 @@
         </div>
 
         <!-- Beautiful Dropdown Menu -->
-        <div class="dropdown mt-3 mb-3" style="float: right;">
+        <div class="dropdown mt-3 mb-2" style="float: right;">
             <button class="btn btn-white border btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                All
+                <i class="fa-solid fa-filter"> </i> Filter
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item dropdown-item-sm" href="/todo/all">All</a>
                 <a class="dropdown-item dropdown-item-sm" href="/todo/missed">Missed</a>
                 <a class="dropdown-item dropdown-item-sm" href="/todo/pending">Pending</a>
                 <a class="dropdown-item dropdown-item-sm" href="/todo/completed">Completed</a>
               </div>
         </div>
+        
 
         <!-- Beautiful Table -->
         <table class="table">
             <thead>
-                <tr>
-                    <th scope="col">Task</th>
-                    <th scope="col">Due Date</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                <tr class="p-3">
+                    <th scope="col"><i class="fa-solid fa-list-check"></i> Task</th>
+                    <th scope="col"><i class="fa-regular fa-calendar-days"></i> Due Date</th>
+                    <th scope="col"><i class="fa-solid fa-circle-question"></i> Status</th>
+                    <th scope="col"><i class="fa-solid fa-person-walking"></i> Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,13 +93,13 @@
                         }
                       } %>
 
-                    <td class="<%=getTextColor(task.status) %>"><%= task.status %></td>
+                    <td class="<%=getTextColor(task.status) %> text-bold"><%= task.status %></td>
 
                     <td>
                         <% if (task.status=="Pending") { %>
-                            <a href="/todo/complete/<%=task.id%>">Completed</a>/
+                            <a href="/todo/complete/<%=task.id%>" class="text-success" style="text-decoration: none;"><i class="fa-solid fa-check text-success"></i> Done</a> |
                         <% } %>
-                        <a href="/todo/delete/<%=task.id%>">Delete</a>
+                        <a href="/todo/delete/<%=task.id%>" class="text-danger" style="text-decoration: none;" ><i class="fa-solid fa-trash text-danger"></i> Remove</a>
                         
                     </td>
                 </tr>
@@ -96,6 +107,4 @@
             </tbody>
         </table>
     </div>
-</body>
-
-</html>
+<%- include('layouts/footer') %>

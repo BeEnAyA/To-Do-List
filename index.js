@@ -17,24 +17,25 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.locals.moment=moment
 
-app.get("/",taskController.showAllTask)
-app.post('/todo',taskController.addTask)
-app.get('/todo/missed',taskController.showMissedTask)
-app.get('/todo/completed',taskController.showCompletedTask)
-app.get('/todo/pending',taskController.showPendingTask)
-app.get('/todo/complete/:taskId',taskController.completeTask)
-app.get('/todo/delete/:taskId',taskController.deleteTask)
-  
+
+app.use(express.static(path.join(__dirname+'/public')));
+
 app.use(session({
    secret: 'google-auth',
    resave: false,
-   saveUninitialized: false,
+   saveUninitialized: true,
+   cookie: { maxAge: 86400000 },
  }))
 app.use(passport.initialize());
 app.use(passport.session());
    
 db.sequelize.sync({force:false})
   
+
+
+app.listen(port,()=>{
+   console.log("Server started at: http://localhost:4000") 
+})
 // Auth 
 app.get('/auth', passport.authenticate('google', { scope:
     [ 'email', 'profile' ]
@@ -51,17 +52,26 @@ app.get( '/auth/callback',
 app.get('/auth/callback/success' , (req , res) => {
     if(!req.user)
         res.redirect('/auth/callback/failure');
-    res.render('some')
-    console.log(req.user)
+    res.redirect('/todo/all')
 });
   
 // failure
 app.get('/auth/callback/failure' , (req , res) => {
-    res.send("Error");
+     res.redirect('/');
 })
 
+checkAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) { return next() }
+    res.redirect("/")
+  }
 
 
-app.listen(port,()=>{
-   console.log("Server started at: http://localhost:4000") 
-})
+app.get("/",taskController.googleLogin)
+app.post('/todo',checkAuthenticated,taskController.addTask)
+app.get('/todo/missed',checkAuthenticated,taskController.showMissedTask)
+app.get('/todo/completed',checkAuthenticated,taskController.showCompletedTask)
+app.get('/todo/pending',checkAuthenticated,taskController.showPendingTask)
+app.get('/todo/complete/:taskId',checkAuthenticated,taskController.completeTask)
+app.get('/todo/delete/:taskId',checkAuthenticated,taskController.deleteTask)
+app.get('/todo/all',checkAuthenticated,taskController.showAllTask)
+app.get('/todo/logout',checkAuthenticated,taskController.googleLogout)

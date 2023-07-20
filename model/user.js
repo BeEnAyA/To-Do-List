@@ -1,10 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("users", {
-      displayname: {
+      googleId:{
+        type:DataTypes.STRING,
+        primaryKey:true,
+        allowNull:false,
+      },
+      displayName: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      gmail: {
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique:true,
@@ -17,14 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         type:DataTypes.STRING,
         allowNull:true,
       },
-      otp:{
-        type:DataTypes.INTEGER,
-        allowNull:true,
-      },
-      is_oauth_user:{
-        type:DataTypes.BOOLEAN,
-        allowNull:false,
-      }
     });
     return User;
   };

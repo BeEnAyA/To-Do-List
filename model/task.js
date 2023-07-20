@@ -5,12 +5,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       due_date: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       status:{
         type:DataTypes.STRING,
         defaultValue:"Pending",
+        allowNull:false,
+      },
+      userId:{
+        type:DataTypes.STRING,
         allowNull:false,
       }
     });
